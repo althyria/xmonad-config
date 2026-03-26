@@ -3,7 +3,7 @@
   imports = [
     inputs.haskell-flake.flakeModule
   ];
-  perSystem = { self', lib, config, pkgs, ... }: {
+  perSystem = { self', lib, ... }: {
     # Our only Haskell project. You can have multiple projects, but this template
     # has only one.
     # See https://github.com/srid/haskell-flake/blob/master/example/flake.nix
@@ -55,8 +55,6 @@
       autoWire = [ "packages" "apps" "checks" ]; # Wire all but the devShell
     };
 
-    # Default package & app.
-    packages.default = self'.packages.xmonad-config;
     apps.default = self'.apps.xmonad-config;
   };
 }
