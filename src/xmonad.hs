@@ -16,6 +16,7 @@ import XMonad.StackSet qualified as W
 import XMonad.Util.EZConfig
 import XMonad.Util.Font
 import XMonad.Util.Loggers
+import XMonad.Util.SpawnOnce
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -45,6 +46,7 @@ myConfig = def
     , focusedBorderColor = myFocusedBorderColor
     , workspaces         = myWorkspaces
     , manageHook         = myManageHook
+    , startupHook        = myStartupHook
     , keys               = (`mkKeymap` myKeymap)
     } 
 
@@ -52,15 +54,17 @@ myConfig = def
 -- Configuration
 --
 
+-- User components
 myTerminal           = "wezterm"
-myModMask            = mod4Mask
+myScrot              = "scrot -s '%Y%m%d_%H%M%S.png' -e 'mv $f ~/Pictures/scrots/'"
+
+-- Core components
 myBorderWidth        = 5
+myModMask            = mod4Mask
 myNormalBorderColor  = "#32302f"
 myFocusedBorderColor = "#32302f"
-myWorkspaces         = ["root", "aux", "www", "game", "void"]
 myLauncher           = "dmenu_run -fn 'Fisa Code-10'"
-myFileManager        = "thunar"
-myScrot              = "scrot -s '%Y%m%d_%H%M%S.png' -e 'mv $f ~/Pictures/scrots/'"
+myWorkspaces         = ["root", "aux", "www", "game", "void"]
 
 
 --
@@ -137,8 +141,8 @@ myKeymap =
     , ("<XF86AudioStop>"       , spawn "mpc stop"  )
     , ("<XF86AudioNext>"       , spawn "mpc next"  )
     , ("<XF86AudioPrev>"       , spawn "mpc prev"  )
-    , ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -10%")
-    , ("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +10%")
+    , ("<XF86AudioLowerVolume>", spawn "amixer set Master 10%-")
+    , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 10%+")
     ]
 
 
@@ -167,8 +171,10 @@ layoutMode = mode "layout" $ mkKeysEz
 spawnMode :: Mode
 spawnMode = mode "spawn" $ mkKeysEz
     -- spawn programs (exits immediately)
-    [ ("t", spawn myFileManager >> exitMode)
-    , ("s", spawn myScrot       >> exitMode)
+    [ ("f", spawn "firefox"       >> exitMode)
+    , ("b", spawn "bolt-launcher" >> exitMode)
+    , ("t", spawn "thunderbird"   >> exitMode)
+    , ("s", spawn myScrot         >> exitMode)
     ]
 
 
@@ -214,6 +220,14 @@ myXmobarPP = def
 
 
 --
+-- StartupHook
+--
+
+myStartupHook :: X ()
+myStartupHook = spawnOnce "feh-wallpaper"
+
+
+--
 -- ManageHook
 --
 
@@ -221,9 +235,7 @@ myXmobarPP = def
 q ~? x = fmap (x `L.isInfixOf`) q
 
 myManageHook = composeAll
-    [ className =? "Thunar"     --> doRectFloat (W.RationalRect 0.25 0.25 0.5 0.5)
-    , className =? "Ristretto"  --> doFloat
-    , className =? "Tk"         --> doFloat -- gui development (python)
+    [ className =? "Tk"         --> doFloat -- gui development (python)
     , className =? "TkFDialog"  --> doFloat -- ^^
     , className ~? "App"        --> doFloat -- gui development (java)
     ]
