@@ -1,6 +1,5 @@
-import Xmobar
-
 import XMonad.Hooks.StatusBar.PP (wrap)
+import Xmobar
 
 import XMonadConfig.GruvboxMaterial
 
@@ -30,6 +29,7 @@ config =
           ++ "%_XMONAD_LOG_1%"
           ++ "} %date% {"
           ++ "%YPJT% %disku%"
+          ++ "%battery%"
     }
  where
   myLogo :: String
@@ -80,6 +80,20 @@ config =
           , inWrapper (ppTitle "Uptime" ++ red "<days>d <hours>h <minutes>m")
           ]
           (60 `seconds`)
+    , --
+      Run $
+        Battery
+          [ "--template"
+          , inWrapper (ppTitle "Battery" ++ "<acstatus>")
+          , "--"
+          , "-o"
+          , green "<left>%" ++ grey2 " <timeleft>" -- on battery
+          , "-O"
+          , yellow "<left>%" ++ grey2 " charging" -- charging
+          , "-i"
+          , aqua "full" -- full/AC
+          ]
+          (30 `seconds`)
     ]
    where
     -- Stylistic formatting
