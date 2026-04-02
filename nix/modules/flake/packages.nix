@@ -13,7 +13,7 @@
       });
 
       packages.feh-wallpaper = pkgs.writeShellScriptBin "feh-wallpaper" ''
-        exec ${pkgs.feh}/bin/feh --bg-center ${wallpaper}
+        exec ${pkgs.feh}/bin/feh --bg-fill ${wallpaper}
       '';
 
       # Default package: xmonad WM environment.
