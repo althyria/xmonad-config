@@ -154,6 +154,7 @@ termMode :: Mode
 termMode = mode "terminal" $ mkKeysEz
     -- spawn terminals (exits immediately)
     [ ("d", spawn "wezterm connect unix --workspace default"   >> exitMode)
+    , ("e", spawn "wezterm connect unix --workspace email"     >> exitMode)
     , ("s", spawn "wezterm connect unix --workspace sysadmin"  >> exitMode)
     , ("c", spawn "wezterm connect unix --workspace chat"      >> exitMode)
     , ("m", spawn "wezterm connect unix --workspace media"     >> exitMode)
